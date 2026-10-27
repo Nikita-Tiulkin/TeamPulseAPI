@@ -1,0 +1,5679 @@
+openapi: 3.0.3
+info:
+  title: TeamPulse API
+  version: 1.0.0
+servers:
+- url: http://localhost:8000
+tags:
+- name: Auth
+- name: Overview
+- name: Teams
+- name: Employees
+- name: Managers
+- name: Tasks
+- name: Sources
+- name: Reports
+- name: Lookups
+paths:
+  /me:
+    get:
+      tags:
+      - Auth
+      summary: Получить текущего пользователя
+      operationId: getMe
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUser'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      security:
+      - sessionCookie: []
+      parameters: []
+  /auth/login:
+    post:
+      tags:
+      - Auth
+      summary: Войти в систему
+      operationId: login
+      description: Устанавливает cookie сессии.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInput'
+            examples:
+              request:
+                summary: Пример запроса
+                value:
+                  email: admin@example.com
+                  password: Password123!
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUser'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters: []
+  /auth/logout:
+    post:
+      tags:
+      - Auth
+      summary: Выйти из системы
+      operationId: logout
+      responses:
+        '204':
+          description: Операция выполнена без тела ответа
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters: []
+  /auth/forgot-password:
+    post:
+      tags:
+      - Auth
+      summary: Запросить восстановление пароля
+      operationId: forgotPassword
+      description: Всегда возвращает успех, даже если email не зарегистрирован.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordInput'
+            examples:
+              request:
+                summary: Пример запроса
+                value:
+                  email: employee@example.com
+      responses:
+        '204':
+          description: Операция выполнена без тела ответа
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters: []
+  /auth/reset-password:
+    post:
+      tags:
+      - Auth
+      summary: Установить новый пароль по токену
+      operationId: resetPassword
+      description: Устанавливает cookie сессии после успешного сброса.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordInput'
+            examples:
+              request:
+                summary: Пример запроса
+                value:
+                  token: placeholder-reset-token
+                  password: NewPassword123!
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUser'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters: []
+  /overview:
+    get:
+      tags:
+      - Overview
+      summary: Получить обзор команды
+      operationId: getOverview
+      security:
+      - sessionCookie: []
+      parameters:
+      - &id001
+        name: period
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - day
+          - week
+          - month
+          example: week
+        description: Период отчёта
+      - &id002
+        name: date
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+          example: '2026-10-23'
+        description: Опорная дата
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Overview'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+  /teams:
+    get:
+      tags:
+      - Teams
+      summary: Получить список команд
+      operationId: listTeams
+      security:
+      - sessionCookie: []
+      parameters:
+      - &id003
+        name: q
+        in: query
+        required: false
+        schema:
+          type: string
+          example: интеграция
+        description: Поиск по тексту
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponseTeamRow'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+    post:
+      tags:
+      - Teams
+      summary: Создать команду
+      operationId: createTeam
+      security:
+      - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTeamInput'
+            examples:
+              request:
+                summary: Пример запроса
+                value:
+                  name: Команда разработки
+                  managerIds:
+                  - 99999999-9999-4999-8999-999999999999
+                  memberIds:
+                  - 77777777-7777-4777-8777-777777777777
+      responses:
+        '201':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamRow'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters: []
+  /teams/{id}:
+    get:
+      tags:
+      - Teams
+      summary: Получить команду
+      operationId: getTeam
+      security:
+      - sessionCookie: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+      - *id001
+      - *id002
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamDetail'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+  /teams/{id}/archive:
+    post:
+      tags:
+      - Teams
+      summary: Архивировать команду
+      operationId: archiveTeam
+      security:
+      - sessionCookie: []
+      responses:
+        '204':
+          description: Операция выполнена без тела ответа
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+  /teams/{id}/members:
+    post:
+      tags:
+      - Teams
+      summary: Добавить участников
+      operationId: addTeamMembers
+      security:
+      - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamMembersInput'
+            examples:
+              request:
+                summary: Пример запроса
+                value:
+                  employeeIds:
+                  - 77777777-7777-4777-8777-777777777777
+      responses:
+        '204':
+          description: Операция выполнена без тела ответа
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+  /teams/{id}/members/{employeeId}:
+    delete:
+      tags:
+      - Teams
+      summary: Удалить участника команды
+      operationId: removeTeamMember
+      security:
+      - sessionCookie: []
+      responses:
+        '204':
+          description: Операция выполнена без тела ответа
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+      - name: employeeId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 77777777-7777-4777-8777-777777777777
+  /teams/{id}/managers:
+    post:
+      tags:
+      - Teams
+      summary: Назначить руководителей
+      operationId: addTeamManagers
+      security:
+      - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamManagersInput'
+            examples:
+              request:
+                summary: Пример запроса
+                value:
+                  managerIds:
+                  - 99999999-9999-4999-8999-999999999999
+      responses:
+        '204':
+          description: Операция выполнена без тела ответа
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+  /teams/{id}/managers/{managerId}:
+    delete:
+      tags:
+      - Teams
+      summary: Удалить руководителя команды
+      operationId: removeTeamManager
+      security:
+      - sessionCookie: []
+      responses:
+        '204':
+          description: Операция выполнена без тела ответа
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+      - name: managerId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 99999999-9999-4999-8999-999999999999
+  /teams/{id}/source-connections:
+    post:
+      tags:
+      - Teams
+      summary: Начать подключение источника
+      operationId: startSourceConnection
+      description: Возвращает код, который пользователь отправляет боту в рабочем чате.
+      security:
+      - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SourceConnectionInput'
+            examples:
+              request:
+                summary: Пример запроса
+                value:
+                  service: telegram
+      responses:
+        '201':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceConnection'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+  /teams/{id}/source-connections/{connectionId}:
+    get:
+      tags:
+      - Teams
+      summary: Проверить статус подключения источника
+      operationId: getSourceConnection
+      description: При статусе connected содержит source.
+      security:
+      - sessionCookie: []
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceConnectionStatus'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+      - name: connectionId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 88888888-8888-4888-8888-888888888888
+  /teams/{id}/sources/{sourceId}:
+    delete:
+      tags:
+      - Teams
+      summary: Отключить источник команды
+      operationId: removeTeamSource
+      security:
+      - sessionCookie: []
+      responses:
+        '204':
+          description: Операция выполнена без тела ответа
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+      - name: sourceId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 66666666-6666-4666-8666-666666666666
+  /employees:
+    get:
+      tags:
+      - Employees
+      summary: Получить список сотрудников
+      operationId: listEmployees
+      security:
+      - sessionCookie: []
+      parameters:
+      - *id003
+      - name: team
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponseEmployeeRow'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+    post:
+      tags:
+      - Employees
+      summary: Создать сотрудника
+      operationId: createEmployee
+      description: Сервер отправляет приглашение на email.
+      security:
+      - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPersonInput'
+            examples:
+              request:
+                summary: Пример запроса
+                value:
+                  name: Алексей Морозов
+                  email: employee@example.com
+                  teamIds:
+                  - 55555555-5555-4555-8555-555555555555
+      responses:
+        '201':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeRow'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters: []
+  /employees/{id}:
+    get:
+      tags:
+      - Employees
+      summary: Получить карточку сотрудника
+      operationId: getEmployee
+      security:
+      - sessionCookie: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: UUID сотрудника или специальное значение me.
+        schema:
+          type: string
+          example: 55555555-5555-4555-8555-555555555555
+      - *id001
+      - *id002
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeDetail'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+    patch:
+      tags:
+      - Employees
+      summary: Изменить сотрудника
+      operationId: updateEmployee
+      description: При изменении email сервер отправляет новое приглашение.
+      security:
+      - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditPersonInput'
+            examples:
+              request:
+                summary: Пример запроса
+                value:
+                  name: Алексей Морозов
+                  email: employee@example.com
+      responses:
+        '204':
+          description: Операция выполнена без тела ответа
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: UUID сотрудника или специальное значение me.
+        schema:
+          type: string
+          example: 55555555-5555-4555-8555-555555555555
+  /employees/{id}/archive:
+    post:
+      tags:
+      - Employees
+      summary: Архивировать сотрудника
+      operationId: archiveEmployee
+      security:
+      - sessionCookie: []
+      responses:
+        '204':
+          description: Операция выполнена без тела ответа
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: UUID сотрудника или специальное значение me.
+        schema:
+          type: string
+          example: 55555555-5555-4555-8555-555555555555
+  /employees/{id}/teams:
+    post:
+      tags:
+      - Employees
+      summary: Добавить сотрудника в команды
+      operationId: addEmployeeTeams
+      security:
+      - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeTeamsInput'
+            examples:
+              request:
+                summary: Пример запроса
+                value:
+                  teamIds:
+                  - 55555555-5555-4555-8555-555555555555
+      responses:
+        '204':
+          description: Операция выполнена без тела ответа
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: UUID сотрудника или специальное значение me.
+        schema:
+          type: string
+          example: 55555555-5555-4555-8555-555555555555
+  /employees/{id}/teams/{teamId}:
+    delete:
+      tags:
+      - Employees
+      summary: Убрать сотрудника из команды
+      operationId: removeEmployeeTeam
+      security:
+      - sessionCookie: []
+      responses:
+        '204':
+          description: Операция выполнена без тела ответа
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: UUID сотрудника или специальное значение me.
+        schema:
+          type: string
+          example: 55555555-5555-4555-8555-555555555555
+      - name: teamId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+  /managers:
+    get:
+      tags:
+      - Managers
+      summary: Получить список руководителей
+      operationId: listManagers
+      security:
+      - sessionCookie: []
+      parameters:
+      - *id003
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponseManagerRow'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+    post:
+      tags:
+      - Managers
+      summary: Создать руководителя
+      operationId: createManager
+      security:
+      - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPersonInput'
+            examples:
+              request:
+                summary: Пример запроса
+                value:
+                  name: Ирина Смирнова
+                  email: manager@example.com
+                  teamIds:
+                  - 55555555-5555-4555-8555-555555555555
+      responses:
+        '201':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagerRow'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters: []
+  /managers/{id}:
+    get:
+      tags:
+      - Managers
+      summary: Получить карточку руководителя
+      operationId: getManager
+      security:
+      - sessionCookie: []
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagerDetail'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+    patch:
+      tags:
+      - Managers
+      summary: Изменить руководителя
+      operationId: updateManager
+      security:
+      - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditPersonInput'
+            examples:
+              request:
+                summary: Пример запроса
+                value:
+                  name: Ирина Смирнова
+                  email: manager@example.com
+      responses:
+        '204':
+          description: Операция выполнена без тела ответа
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+  /managers/{id}/archive:
+    post:
+      tags:
+      - Managers
+      summary: Архивировать руководителя
+      operationId: archiveManager
+      security:
+      - sessionCookie: []
+      responses:
+        '204':
+          description: Операция выполнена без тела ответа
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+  /managers/{id}/teams:
+    post:
+      tags:
+      - Managers
+      summary: Назначить руководителю команды
+      operationId: addManagerTeams
+      security:
+      - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeTeamsInput'
+            examples:
+              request:
+                summary: Пример запроса
+                value:
+                  teamIds:
+                  - 55555555-5555-4555-8555-555555555555
+      responses:
+        '204':
+          description: Операция выполнена без тела ответа
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+  /managers/{id}/teams/{teamId}:
+    delete:
+      tags:
+      - Managers
+      summary: Убрать команду у руководителя
+      operationId: removeManagerTeam
+      security:
+      - sessionCookie: []
+      responses:
+        '204':
+          description: Операция выполнена без тела ответа
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+      - name: teamId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+  /tasks:
+    get:
+      tags:
+      - Tasks
+      summary: Получить список задач
+      operationId: listTasks
+      security:
+      - sessionCookie: []
+      parameters:
+      - *id003
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            example: Блокер
+          example:
+          - Блокер
+          - Просрочено
+        style: form
+        explode: true
+      - name: team
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+      - name: assignee
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+          example: 77777777-7777-4777-8777-777777777777
+      - name: deadline
+        in: query
+        required: false
+        schema:
+          type: string
+          example: Ближайшие 7 дней
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponseTaskRow'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+  /agreements:
+    get:
+      tags:
+      - Tasks
+      summary: Получить список договорённостей
+      operationId: listAgreements
+      security:
+      - sessionCookie: []
+      parameters:
+      - *id003
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            example: Просрочено
+        style: form
+        explode: true
+      - name: team
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+      - name: participant
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+          example: 77777777-7777-4777-8777-777777777777
+      - name: deadline
+        in: query
+        required: false
+        schema:
+          type: string
+          example: Ближайшие 7 дней
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponseAgreementRow'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+  /tasks/{id}:
+    get:
+      tags:
+      - Tasks
+      summary: Получить задачу и историю
+      operationId: getTask
+      security:
+      - sessionCookie: []
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDetail'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+  /sources/{id}:
+    get:
+      tags:
+      - Sources
+      summary: Получить исходное сообщение
+      operationId: getSource
+      description: Если исходное сообщение удалено или недоступно, поле message равно null.
+      security:
+      - sessionCookie: []
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceDetail'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+  /sources/{id}/error-reports:
+    post:
+      tags:
+      - Sources
+      summary: Сообщить об ошибке извлечения
+      operationId: reportSourceError
+      security:
+      - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorReportInput'
+            examples:
+              request:
+                summary: Пример запроса
+                value:
+                  reason: Неверно определён статус
+                  comment: Сообщение относится к другой задаче
+      responses:
+        '204':
+          description: Операция выполнена без тела ответа
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+  /reports:
+    get:
+      tags:
+      - Reports
+      summary: Получить архив отчётов
+      operationId: listReports
+      security:
+      - sessionCookie: []
+      parameters:
+      - *id003
+      - name: team
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+      - name: period
+        in: query
+        required: false
+        schema:
+          type: string
+          example: 7 дней
+        description: Подпись периода, используемая интерфейсом
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponseReportRow'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+  /reports/{id}:
+    get:
+      tags:
+      - Reports
+      summary: Получить подробности отчёта
+      operationId: getReport
+      security:
+      - sessionCookie: []
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportDetail'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Идентификатор отчёта в формате YYYY-MM-DD.
+        schema:
+          type: string
+          example: '2026-10-23'
+  /lookups:
+    get:
+      tags:
+      - Lookups
+      summary: Получить справочники для фильтров
+      operationId: getLookups
+      security:
+      - sessionCookie: []
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lookups'
+              examples:
+                response:
+                  summary: Пример ответа
+                  value: {}
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Некорректный запрос
+                    code: http_400
+        '401':
+          description: Требуется вход или неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Требуется вход или неверные учётные данные
+                    code: http_401
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Недостаточно прав
+                    code: http_403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ресурс не найден
+                    code: http_404
+        '409':
+          description: Конфликт состояния
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Конфликт состояния
+                    code: http_409
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Ошибка валидации
+                    code: http_422
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    message: Внутренняя ошибка сервера
+                    code: http_500
+      parameters: []
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: session
+      description: Cookie сессии. Имя cookie задаётся backend; здесь используется условное имя session.
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Текст ошибки
+        code:
+          type: string
+          example: validation_error
+      required:
+      - message
+    CurrentUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 11111111-1111-4111-8111-111111111111
+        name:
+          type: string
+          example: Алексей Морозов
+        initials:
+          type: string
+          example: АМ
+        role:
+          type: string
+          enum:
+          - admin
+          - manager
+          - employee
+          example: manager
+        roleLabel:
+          type: string
+          example: Руководитель
+      required:
+      - id
+      - name
+      - initials
+      - role
+      - roleLabel
+    PeriodInfo:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - day
+          - week
+          - month
+          example: week
+        label:
+          type: string
+          example: 7–13 октября
+      required:
+      - type
+      - label
+    Tone:
+      type: string
+      enum:
+      - neutral
+      - danger
+      - warning
+      - success
+      - accent
+      example: warning
+    TeamColor:
+      type: string
+      enum:
+      - violet
+      - blue
+      - pink
+      - green
+      example: blue
+    Kpi:
+      type: object
+      properties:
+        label:
+          type: string
+          example: В работе
+        value:
+          type: string
+          example: '12'
+        delta:
+          type: string
+          example: '+2'
+        icon:
+          type: string
+          enum:
+          - briefcase
+          - check
+          - alert
+          - clock
+          - person
+          example: briefcase
+        tone:
+          type: string
+          enum:
+          - blue
+          - green
+          - red
+          - orange
+          - slate
+          example: blue
+        status:
+          type: string
+          example: В работе
+      required:
+      - label
+      - value
+      - delta
+      - icon
+      - tone
+      - status
+    SourcePreview:
+      type: object
+      properties:
+        author:
+          type: string
+          example: Алексей Морозов
+        time:
+          type: string
+          example: сегодня, 09:42
+        chat:
+          type: string
+          example: Разработка
+        excerpt:
+          type: string
+          example: Исправил авторизацию клиента
+      required:
+      - author
+      - time
+      - chat
+      - excerpt
+    SourceRef:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 22222222-2222-4222-8222-222222222222
+        tone:
+          type: string
+          enum:
+          - accent
+          - danger
+          - warning
+          example: accent
+        count:
+          type: integer
+          format: int64
+          example: 2
+        preview:
+          $ref: '#/components/schemas/SourcePreview'
+      required:
+      - id
+      - preview
+    RichSegment:
+      type: object
+      properties:
+        text:
+          type: string
+          example: Исправил авторизацию
+        source:
+          $ref: '#/components/schemas/SourceRef'
+      required:
+      - text
+      - source
+      description: Выделенный фрагмент текста со ссылкой на источник.
+    RichParagraph:
+      type: array
+      items:
+        oneOf:
+        - type: string
+          example: Сегодня завершена часть интеграции.
+        - $ref: '#/components/schemas/RichSegment'
+    Summary:
+      type: object
+      properties:
+        paragraphs:
+          type: array
+          items:
+            $ref: '#/components/schemas/RichParagraph'
+      required:
+      - paragraphs
+    SignalItem:
+      type: object
+      properties:
+        taskId:
+          type: string
+          format: uuid
+          example: 33333333-3333-4333-8333-333333333333
+        title:
+          type: string
+          example: Доступ к API заблокирован
+        subtitle:
+          type: string
+          example: Ожидает ответа клиента
+        icon:
+          type: string
+          enum:
+          - alert
+          - clock
+          - person
+          example: alert
+        tone:
+          type: string
+          enum:
+          - danger
+          - warning
+          - neutral
+          example: danger
+        badge:
+          type: object
+          properties:
+            text:
+              type: string
+              example: 3 дня
+            tone:
+              $ref: '#/components/schemas/Tone'
+      required:
+      - taskId
+      - title
+      - subtitle
+      - icon
+      - tone
+    Signals:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+          example: 3
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SignalItem'
+      required:
+      - items
+    PersonRef:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 44444444-4444-4444-8444-444444444444
+        name:
+          type: string
+          example: Иван Иванов
+        initials:
+          type: string
+          example: ИИ
+      required:
+      - id
+      - name
+      - initials
+    TeamRow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+        name:
+          type: string
+          example: Команда разработки
+        color:
+          $ref: '#/components/schemas/TeamColor'
+        people:
+          type: integer
+          format: int64
+          example: 5
+        work:
+          type: integer
+          format: int64
+          example: 3
+        block:
+          type: integer
+          format: int64
+          example: 1
+        late:
+          type: integer
+          format: int64
+          example: 1
+        staleCount:
+          type: integer
+          format: int64
+          example: 0
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          example: '2026-10-23T12:30:00Z'
+        dataStale:
+          type: boolean
+          example: false
+        noManager:
+          type: boolean
+          example: false
+      required:
+      - id
+      - name
+      - color
+      - people
+      - work
+      - block
+      - late
+      - staleCount
+      - updatedAt
+    ListResponseTeamRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamRow'
+        total:
+          type: integer
+          format: int64
+          example: 1
+      required:
+      - items
+      - total
+    ConnectedSource:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 66666666-6666-4666-8666-666666666666
+        service:
+          type: string
+          enum:
+          - Telegram
+          - Discord
+          - Контур.Толк
+          example: Telegram
+        type:
+          type: string
+          enum:
+          - telegram
+          - discord
+          - tolk
+          example: telegram
+        chat:
+          type: string
+          example: Команда разработки
+        href:
+          type: string
+          example: https://example.invalid/chat
+      required:
+      - id
+      - service
+      - type
+      - chat
+      - href
+    MemberRow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 77777777-7777-4777-8777-777777777777
+        name:
+          type: string
+          example: Иван Иванов
+        initials:
+          type: string
+          example: ИИ
+        work:
+          type: integer
+          format: int64
+          example: 2
+        block:
+          type: integer
+          format: int64
+          example: 0
+        late:
+          type: integer
+          format: int64
+          example: 1
+      required:
+      - id
+      - name
+      - initials
+      - work
+      - block
+      - late
+    TeamDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+        name:
+          type: string
+          example: Команда разработки
+        color:
+          $ref: '#/components/schemas/TeamColor'
+        peopleCount:
+          type: integer
+          format: int64
+          example: 5
+        dataUpdatedAt:
+          type: string
+          example: сегодня, 12:30
+        period:
+          $ref: '#/components/schemas/PeriodInfo'
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectedSource'
+        managers:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonRef'
+        kpis:
+          type: array
+          items:
+            $ref: '#/components/schemas/Kpi'
+        summary:
+          $ref: '#/components/schemas/Summary'
+        signals:
+          $ref: '#/components/schemas/Signals'
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberRow'
+      required:
+      - id
+      - name
+      - color
+      - peopleCount
+      - dataUpdatedAt
+      - period
+      - sources
+      - managers
+      - kpis
+      - summary
+      - signals
+      - members
+    SourceConnection:
+      type: object
+      properties:
+        connectionId:
+          type: string
+          format: uuid
+          example: 88888888-8888-4888-8888-888888888888
+        code:
+          type: string
+          example: TP-7K4P
+        expiresInMinutes:
+          type: integer
+          format: int64
+          example: 10
+      required:
+      - connectionId
+      - code
+      - expiresInMinutes
+    SourceConnectionStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - waiting
+          - connected
+          example: waiting
+        source:
+          $ref: '#/components/schemas/ConnectedSource'
+      required:
+      - status
+    NewTeamInput:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Команда разработки
+        managerIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+            example: 44444444-4444-4444-8444-444444444444
+        memberIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+            example: 77777777-7777-4777-8777-777777777777
+      required:
+      - name
+      - managerIds
+      - memberIds
+    EmployeeRow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 77777777-7777-4777-8777-777777777777
+        name:
+          type: string
+          example: Алексей Морозов
+        initials:
+          type: string
+          example: АМ
+        position:
+          type: string
+          example: Backend-разработчик
+        email:
+          type: string
+          example: employee@example.com
+        teams:
+          type: array
+          items:
+            type: string
+            example: Команда разработки
+        work:
+          type: integer
+          format: int64
+          example: 3
+        block:
+          type: integer
+          format: int64
+          example: 1
+        late:
+          type: integer
+          format: int64
+          example: 0
+        updatedAt:
+          type: string
+          example: сегодня, 09:42
+      required:
+      - id
+      - name
+      - initials
+      - position
+      - email
+      - teams
+      - work
+      - block
+      - late
+      - updatedAt
+    NewPersonInput:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Алексей Морозов
+        email:
+          type: string
+          format: email
+          example: employee@example.com
+        teamIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+            example: 55555555-5555-4555-8555-555555555555
+      required:
+      - name
+      - email
+      - teamIds
+    EditPersonInput:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Алексей Морозов
+        email:
+          type: string
+          format: email
+          example: employee@example.com
+      required:
+      - name
+      - email
+    ListResponseEmployeeRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmployeeRow'
+        total:
+          type: integer
+          format: int64
+          example: 1
+      required:
+      - items
+      - total
+    EmployeeTaskRow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 33333333-3333-4333-8333-333333333333
+        title:
+          type: string
+          example: Интеграция API клиента
+        status:
+          type: string
+          example: В работе
+        team:
+          type: string
+          example: Команда разработки
+        deadline:
+          type: string
+          example: 25 окт
+        updatedAt:
+          type: string
+          example: сегодня, 09:42
+      required:
+      - id
+      - title
+      - status
+      - team
+      - deadline
+      - updatedAt
+    TimelineEntry:
+      type: object
+      properties:
+        time:
+          type: string
+          example: 09:42
+        text:
+          $ref: '#/components/schemas/RichParagraph'
+        chip:
+          type: object
+          properties:
+            label:
+              type: string
+              example: Telegram
+            sourceId:
+              type: string
+              format: uuid
+              example: 66666666-6666-4666-8666-666666666666
+      required:
+      - time
+      - text
+    TimelineDay:
+      type: object
+      properties:
+        day:
+          type: string
+          example: Сегодня
+        date:
+          type: string
+          example: '2026-10-23'
+        collapsedLabel:
+          type: string
+          example: 3 обновления
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimelineEntry'
+      required:
+      - day
+      - date
+      - entries
+    EmployeeDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 77777777-7777-4777-8777-777777777777
+        name:
+          type: string
+          example: Алексей Морозов
+        initials:
+          type: string
+          example: АМ
+        position:
+          type: string
+          example: Backend-разработчик
+        email:
+          type: string
+          format: email
+          example: employee@example.com
+        teams:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+                example: 55555555-5555-4555-8555-555555555555
+              name:
+                type: string
+                example: Команда разработки
+            required:
+            - id
+            - name
+        dataUpdatedAt:
+          type: string
+          example: сегодня, 12:30
+        period:
+          $ref: '#/components/schemas/PeriodInfo'
+        kpis:
+          type: array
+          items:
+            $ref: '#/components/schemas/Kpi'
+        summary:
+          $ref: '#/components/schemas/Summary'
+        signals:
+          $ref: '#/components/schemas/Signals'
+        tabCounts:
+          type: object
+          properties:
+            tasks:
+              type: integer
+              format: int64
+              example: 3
+            blockers:
+              type: integer
+              format: int64
+              example: 1
+          required:
+          - tasks
+          - blockers
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmployeeTaskRow'
+        timeline:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimelineDay'
+      required:
+      - id
+      - name
+      - initials
+      - position
+      - email
+      - teams
+      - dataUpdatedAt
+      - period
+      - kpis
+      - summary
+      - signals
+      - tabCounts
+      - tasks
+      - timeline
+    ManagerRow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 99999999-9999-4999-8999-999999999999
+        name:
+          type: string
+          example: Ирина Смирнова
+        initials:
+          type: string
+          example: ИС
+        email:
+          type: string
+          format: email
+          example: manager@example.com
+        teams:
+          type: array
+          items:
+            type: string
+            example: Команда разработки
+      required:
+      - id
+      - name
+      - initials
+      - email
+      - teams
+    ListResponseManagerRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManagerRow'
+        total:
+          type: integer
+          format: int64
+          example: 1
+      required:
+      - items
+      - total
+    ManagerTeamRow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+        name:
+          type: string
+          example: Команда разработки
+        color:
+          $ref: '#/components/schemas/TeamColor'
+        people:
+          type: integer
+          format: int64
+          example: 5
+        work:
+          type: integer
+          format: int64
+          example: 3
+        blockers:
+          type: integer
+          format: int64
+          example: 1
+        late:
+          type: integer
+          format: int64
+          example: 0
+        staleCount:
+          type: integer
+          format: int64
+          example: 0
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          example: '2026-10-23T12:30:00Z'
+        isLastManager:
+          type: boolean
+          example: true
+      required:
+      - id
+      - name
+      - color
+      - people
+      - work
+      - blockers
+      - late
+      - staleCount
+      - updatedAt
+      - isLastManager
+    ManagerDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 99999999-9999-4999-8999-999999999999
+        name:
+          type: string
+          example: Ирина Смирнова
+        initials:
+          type: string
+          example: ИС
+        email:
+          type: string
+          format: email
+          example: manager@example.com
+        disabled:
+          type: boolean
+          example: false
+        stats:
+          type: object
+          properties:
+            teams:
+              type: integer
+              format: int64
+              example: 2
+            employees:
+              type: integer
+              format: int64
+              example: 8
+            blockers:
+              type: integer
+              format: int64
+              example: 1
+          required:
+          - teams
+          - employees
+          - blockers
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManagerTeamRow'
+      required:
+      - id
+      - name
+      - initials
+      - email
+      - disabled
+      - stats
+      - teams
+    TaskRow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 33333333-3333-4333-8333-333333333333
+        title:
+          type: string
+          example: Интеграция API клиента
+        team:
+          type: string
+          example: Команда разработки
+        status:
+          type: string
+          example: В работе
+        statusTone:
+          $ref: '#/components/schemas/Tone'
+        assignee:
+          type: string
+          example: Алексей Морозов
+        deadline:
+          type: string
+          example: 25 окт
+        updatedAt:
+          type: string
+          example: сегодня, 09:42
+      required:
+      - id
+      - title
+      - team
+      - status
+      - statusTone
+      - assignee
+      - deadline
+      - updatedAt
+    AgreementRow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa
+        title:
+          type: string
+          example: Отправить предложение клиенту
+        status:
+          type: string
+          example: Подтверждена
+        statusTone:
+          $ref: '#/components/schemas/Tone'
+        participant:
+          type: string
+          example: Анна Петрова
+        deadline:
+          type: string
+          example: 25 окт
+        team:
+          type: string
+          example: Команда разработки
+      required:
+      - id
+      - title
+      - status
+      - statusTone
+      - participant
+      - deadline
+      - team
+    TaskListResponseTaskRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRow'
+        total:
+          type: integer
+          format: int64
+          example: 1
+        counts:
+          type: object
+          properties:
+            tasks:
+              type: integer
+              format: int64
+              example: 12
+            agreements:
+              type: integer
+              format: int64
+              example: 4
+          required:
+          - tasks
+          - agreements
+      required:
+      - items
+      - total
+      - counts
+    TaskListResponseAgreementRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgreementRow'
+        total:
+          type: integer
+          format: int64
+          example: 1
+        counts:
+          type: object
+          properties:
+            tasks:
+              type: integer
+              format: int64
+              example: 12
+            agreements:
+              type: integer
+              format: int64
+              example: 4
+          required:
+          - tasks
+          - agreements
+      required:
+      - items
+      - total
+      - counts
+    HistoryMessage:
+      type: object
+      properties:
+        kind:
+          type: string
+          enum:
+          - message
+          example: message
+        day:
+          type: string
+          example: Сегодня
+        date:
+          type: string
+          example: '2026-10-23'
+        time:
+          type: string
+          example: 09:42
+        author:
+          type: string
+          example: Алексей Морозов
+        initials:
+          type: string
+          example: АМ
+        text:
+          type: string
+          example: Исправил авторизацию клиента
+        source:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: 66666666-6666-4666-8666-666666666666
+            label:
+              type: string
+              example: Открыть сообщение
+          required:
+          - id
+          - label
+      required:
+      - kind
+      - day
+      - date
+      - time
+      - author
+      - initials
+      - text
+      - source
+    HistoryGap:
+      type: object
+      properties:
+        kind:
+          type: string
+          enum:
+          - gap
+          example: gap
+        text:
+          type: string
+          example: Нет обновлений за этот период
+      required:
+      - kind
+      - text
+    TaskDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 33333333-3333-4333-8333-333333333333
+        title:
+          type: string
+          example: Интеграция API клиента
+        badges:
+          type: array
+          items:
+            type: object
+            properties:
+              text:
+                type: string
+                example: В работе
+              tone:
+                $ref: '#/components/schemas/Tone'
+            required:
+            - text
+            - tone
+        team:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: 55555555-5555-4555-8555-555555555555
+            name:
+              type: string
+              example: Команда разработки
+          required:
+          - id
+          - name
+        assignee:
+          type: string
+          example: Алексей Морозов
+        aiSummary:
+          type: string
+          example: Авторизация готова, интеграция продолжается.
+        lastMessage:
+          type: object
+          properties:
+            author:
+              type: string
+              example: Алексей Морозов
+            initials:
+              type: string
+              example: АМ
+            time:
+              type: string
+              example: сегодня, 09:42
+            quote:
+              type: string
+              example: Исправил авторизацию клиента
+            source:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                  example: 66666666-6666-4666-8666-666666666666
+                label:
+                  type: string
+                  example: Открыть сообщение
+              required:
+              - id
+              - label
+          required:
+          - author
+          - initials
+          - time
+          - quote
+          - source
+        fields:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+                example: Следующее действие
+              value:
+                type: string
+                example: Завершить интеграцию
+            required:
+            - label
+            - value
+        history:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/HistoryMessage'
+            - $ref: '#/components/schemas/HistoryGap'
+      required:
+      - id
+      - title
+      - badges
+      - team
+      - assignee
+      - aiSummary
+      - lastMessage
+      - fields
+      - history
+    SourceDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 66666666-6666-4666-8666-666666666666
+        title:
+          type: string
+          example: Сообщение в Telegram
+        service:
+          type: string
+          enum:
+          - Telegram
+          - Discord
+          - Контур.Толк
+          example: Telegram
+        author:
+          type: string
+          example: Алексей Морозов
+        initials:
+          type: string
+          example: АМ
+        time:
+          type: string
+          example: сегодня, 09:42
+        message:
+          type: object
+          properties:
+            before:
+              type: string
+              example: Контекст до выделения
+            mark:
+              type: string
+              example: Исправил авторизацию
+            after:
+              type: string
+              example: Продолжаю интеграцию
+          required:
+          - before
+          - mark
+          - after
+        relatesTo:
+          type: object
+          properties:
+            taskId:
+              type: string
+              format: uuid
+              example: 33333333-3333-4333-8333-333333333333
+            title:
+              type: string
+              example: Интеграция API клиента
+          required:
+          - taskId
+          - title
+        position:
+          type: object
+          properties:
+            index:
+              type: integer
+              format: int64
+              example: 1
+            total:
+              type: integer
+              format: int64
+              example: 2
+          required:
+          - index
+          - total
+        externalUrl:
+          type: string
+          example: https://example.invalid/message
+      required:
+      - id
+      - title
+      - service
+      - author
+      - initials
+      - time
+      - message
+      - relatesTo
+    ErrorReportInput:
+      type: object
+      properties:
+        reason:
+          type: string
+          example: Неверно определён статус
+        comment:
+          type: string
+          example: В сообщении речь о другой задаче
+      required:
+      - reason
+    ReportRow:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '2026-10-23'
+        dateLabel:
+          type: string
+          example: 23 окт
+        month:
+          type: string
+          example: Октябрь 2026
+        title:
+          type: string
+          example: Ежедневная сводка команды
+        preview:
+          type: string
+          example: Завершены 3 задачи, есть 1 блокер
+        team:
+          type: string
+          example: Команда разработки
+        signals:
+          type: integer
+          format: int64
+          example: 1
+        createdLabel:
+          type: string
+          example: сегодня, 18:00
+      required:
+      - id
+      - dateLabel
+      - month
+      - title
+      - preview
+      - team
+      - signals
+      - createdLabel
+    ListResponseReportRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportRow'
+        total:
+          type: integer
+          format: int64
+          example: 1
+      required:
+      - items
+      - total
+    ReportDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '2026-10-23'
+        title:
+          type: string
+          example: Ежедневная сводка команды
+        team:
+          type: string
+          example: Команда разработки
+        type:
+          type: string
+          example: daily
+        createdLabel:
+          type: string
+          example: сегодня, 18:00
+        paragraphs:
+          type: array
+          items:
+            $ref: '#/components/schemas/RichParagraph'
+        attention:
+          $ref: '#/components/schemas/Signals'
+        prevId:
+          type: string
+          nullable: true
+          example: '2026-10-22'
+        nextId:
+          type: string
+          nullable: true
+          example: '2026-10-24'
+      required:
+      - id
+      - title
+      - team
+      - type
+      - createdLabel
+      - paragraphs
+      - attention
+      - prevId
+      - nextId
+    LookupItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 55555555-5555-4555-8555-555555555555
+        name:
+          type: string
+          example: Команда разработки
+        subtitle:
+          type: string
+          example: 5 сотрудников
+        color:
+          $ref: '#/components/schemas/TeamColor'
+      required:
+      - id
+      - name
+    Lookups:
+      type: object
+      properties:
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/LookupItem'
+        people:
+          type: array
+          items:
+            $ref: '#/components/schemas/LookupItem'
+        managers:
+          type: array
+          items:
+            $ref: '#/components/schemas/LookupItem'
+      required:
+      - teams
+      - people
+      - managers
+    LoginInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: admin@example.com
+        password:
+          type: string
+          example: Password123!
+      required:
+      - email
+      - password
+    ForgotPasswordInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: employee@example.com
+      required:
+      - email
+    ResetPasswordInput:
+      type: object
+      properties:
+        token:
+          type: string
+          example: placeholder-reset-token
+        password:
+          type: string
+          example: NewPassword123!
+      required:
+      - token
+      - password
+    TeamMembersInput:
+      type: object
+      properties:
+        employeeIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+            example: 77777777-7777-4777-8777-777777777777
+      required:
+      - employeeIds
+    TeamManagersInput:
+      type: object
+      properties:
+        managerIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+            example: 99999999-9999-4999-8999-999999999999
+      required:
+      - managerIds
+    EmployeeTeamsInput:
+      type: object
+      properties:
+        teamIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+            example: 55555555-5555-4555-8555-555555555555
+      required:
+      - teamIds
+    SourceConnectionInput:
+      type: object
+      properties:
+        service:
+          type: string
+          enum:
+          - telegram
+          - discord
+          - tolk
+          example: telegram
+      required:
+      - service
+    Overview:
+      type: object
+      properties:
+        freshness:
+          type: object
+          properties:
+            label:
+              type: string
+              example: Данные обновлены сегодня
+            updatedAt:
+              type: string
+              example: сегодня, 18:00
+          required:
+          - label
+          - updatedAt
+        period:
+          $ref: '#/components/schemas/PeriodInfo'
+        kpis:
+          type: array
+          items:
+            $ref: '#/components/schemas/Kpi'
+        summary:
+          $ref: '#/components/schemas/Summary'
+        signals:
+          $ref: '#/components/schemas/Signals'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamRow'
+      required:
+      - freshness
+      - period
+      - kpis
+      - summary
+      - signals
+      - teams
+    EmptyResponse:
+      type: object
+      properties: {}
+  parameters: {}
