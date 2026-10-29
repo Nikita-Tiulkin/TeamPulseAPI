@@ -28,10 +28,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CurrentUser'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -127,10 +123,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CurrentUser'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -421,10 +413,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CurrentUser'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -540,10 +528,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Overview'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -645,10 +629,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListResponseTeamRow'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -755,10 +735,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TeamRow'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -862,10 +838,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TeamDetail'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -1488,10 +1460,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SourceConnection'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -1593,10 +1561,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SourceConnectionStatus'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -1816,10 +1780,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListResponseEmployeeRow'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -1926,10 +1886,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EmployeeRow'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -2033,10 +1989,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EmployeeDetail'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -2546,10 +2498,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListResponseManagerRow'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -2655,10 +2603,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ManagerRow'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -2752,10 +2696,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ManagerDetail'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -3305,10 +3245,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskListResponseTaskRow'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -3433,10 +3369,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskListResponseAgreementRow'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -3529,10 +3461,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskDetail'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -3634,10 +3562,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SourceDetail'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -3862,10 +3786,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListResponseReportRow'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -3958,10 +3878,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReportDetail'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -4062,10 +3978,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Lookups'
-              examples:
-                response:
-                  summary: Пример ответа
-                  value: {}
         '400':
           description: Некорректный запрос
           content:
@@ -5673,7 +5585,4 @@ components:
       - summary
       - signals
       - teams
-    EmptyResponse:
-      type: object
-      properties: {}
   parameters: {}
